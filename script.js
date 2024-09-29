@@ -14,6 +14,7 @@ function clickStartOfTiming() {
     result_header.classList.add('hide');
     time_header.style.display = 'block';
     result.textContent = clickCount.toString();
+    game.style.backgroundColor = '#ffffff'
     clickCount = 0;
     clearInterval(countdown);
     let timeLeft = parseFloat(inputTime.value);
@@ -44,56 +45,62 @@ function getRandomColor() {
 function createSquare() {
     const gameTime = parseInt(inputTime.value);
     let squaresAdded = 0;
+
+    // immediately create the first square
+    createAndAppendSquare();
+
     const interval = setInterval(() => {
-        if (squaresAdded < gameTime) {
-            const square = document.createElement('div');
-            square.id = 'square';
-            square.style.backgroundColor = getRandomColor();
-            square.style.position = 'absolute';
-            square.style.cursor = 'pointer';
-
-            const size = getRandomSize(50, 100);
-            square.style.width = `${size}px`;
-            square.style.height = `${size}px`;
-
-            const x = Math.random() * (game.clientWidth - size);
-            const y = Math.random() * (game.clientHeight - size);
-            square.style.left = `${x}px`;
-            square.style.top = `${y}px`;
-
-            game.appendChild(square);
+        // decrease by 1, since the first one has already been added
+        if (squaresAdded < gameTime - 1) {
+            createAndAppendSquare();
             squaresAdded++;
-            square.addEventListener('click', (e) => {
-                clickCount++;
-                result.textContent = clickCount.toString();
-                let circle = document.createElement('span');
-                square.appendChild(circle);
-                circle.style.left = e.offsetX + 'px';
-                circle.style.top = e.offsetY + 'px';
-                circle.style.borderColor = 'grey';
-                circle.classList.add('click');
-
-                setTimeout(() => {
-                    circle.remove();
-                }, 1000);
-
-                setTimeout(() => {
-                    game.removeChild(square);
-                }, 1000);
-            });
-            setTimeout(() => {
-                square.style.opacity = '0';
-                setTimeout(() => {
-                    game.removeChild(square);
-                }, 1000);
-            }, 1000);
         } else {
             btn.style.display = 'block';
             time_header.style.display = 'none';
             result_header.classList.remove('hide');
+            game.style.backgroundColor = '#ccc'
             clearInterval(interval);
         }
     }, 1000);
+
+    function createAndAppendSquare() {
+        const square = document.createElement('div');
+        square.id = 'square';
+        square.style.backgroundColor = getRandomColor();
+        square.style.position = 'absolute';
+        square.style.cursor = 'pointer';
+
+        const size = getRandomSize(50, 100);
+        square.style.width = `${size}px`;
+        square.style.height = `${size}px`;
+
+        const x = Math.random() * (game.clientWidth - size);
+        const y = Math.random() * (game.clientHeight - size);
+        square.style.left = `${x}px`;
+        square.style.top = `${y}px`;
+
+        game.appendChild(square);
+
+        square.addEventListener('click', (e) => {
+            clickCount++;
+            result.textContent = clickCount.toString();
+
+            let circle = document.createElement('span');
+            circle.style.left = e.offsetX + 'px';
+            circle.style.top = e.offsetY + 'px';
+            circle.style.borderColor = 'grey';
+            circle.classList.add('click');
+            square.appendChild(circle);
+
+            setTimeout(() => {
+                circle.remove();
+            }, 1000);
+        });
+
+        setTimeout(() => {
+            game.removeChild(square);
+        }, 1000);
+    }
 }
 
 function getRandomSize(min, max) {
