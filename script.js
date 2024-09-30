@@ -122,18 +122,3 @@ inputTime.addEventListener('input', () => {
         timeDisplay.textContent = value;
     }
 });
-
-game.onclick = (e) => {
-    if (e.target.id === 'square') {
-        return;
-    }
-    //creating a ripple effect
-    let circle = document.createElement('span');
-    circle.style.left = e.offsetX + 'px';
-    circle.style.top = e.offsetY + 'px';
-    circle.style.borderColor = 'grey';
-    game.appendChild(circle);
-    circle.classList.add('click');
-
-    setTimeout(() => circle.remove(), 500);
-};
